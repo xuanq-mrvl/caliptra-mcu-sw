@@ -41,14 +41,12 @@ macro_rules! instantiate_logging_flash {
     ) => {{
         macro_rules! assign_logging_flash {
             ($idx:expr, $volume:ident) => {
-                let log_fl_user = components::flash::FlashUserComponent::new($mux).finalize(
-                    components::flash_user_component_static!($flash_ctrl_ty),
-                );
+                let log_fl_user = components::flash::FlashUserComponent::new($mux)
+                    .finalize(components::flash_user_component_static!($flash_ctrl_ty));
                 $instances[$idx] = Some(
                     $crate::components::logging::LoggingFlashComponent::new(
                         $kernel,
-                        caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_DRIVER_NUM_START
-                            + $idx,
+                        caliptra_mcu_config_emulator::flash::LOGGING_FLASH_DRIVER_NUM_START + $idx,
                         log_fl_user,
                         &$volume,
                         $circular,

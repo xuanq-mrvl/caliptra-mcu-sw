@@ -191,6 +191,11 @@ impl StandAloneChecksumCalculator {
 }
 impl ChecksumCalculator for StandAloneChecksumCalculator {}
 
+pub const LOGGING_FLASH_INSTANCE_COUNT: usize = 2;
+pub const LOGGING_FLASH_DRIVER_NUM_START: usize = 0x9001_0000;
+pub const LOGGING_FLASH_DRIVER_NUM_END: usize = LOGGING_FLASH_DRIVER_NUM_START + 0xFF;
+pub const LOGGING_FLASH1: u32 = LOGGING_FLASH_DRIVER_NUM_START as u32 + 1;
+
 // Logging flash configuration for emulator platform
 #[derive(Debug, Clone, Copy)]
 pub struct LoggingFlashConfig {

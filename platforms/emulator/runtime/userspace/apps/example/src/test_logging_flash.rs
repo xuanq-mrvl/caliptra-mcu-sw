@@ -1,6 +1,6 @@
 // Licensed under the Apache-2.0 license
 
-use caliptra_mcu_libsyscall_caliptra::logging::driver_num::LOGGING_FLASH1;
+use caliptra_mcu_config_emulator::flash::LOGGING_FLASH1;
 use caliptra_mcu_libsyscall_caliptra::logging::LoggingSyscall;
 use caliptra_mcu_romtime::println;
 use core::fmt::Write;

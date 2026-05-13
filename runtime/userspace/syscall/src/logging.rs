@@ -146,8 +146,8 @@ impl<S: Syscalls> LoggingSyscall<S> {
 // -----------------------------------------------------------------------------
 
 pub mod driver_num {
+    /// Conventional driver number for instance 0; additional instances are platform-defined.
     pub const LOGGING_FLASH0: u32 = 0x9001_0000;
-    pub const LOGGING_FLASH1: u32 = 0x9001_0001;
 }
 
 // Upcalls

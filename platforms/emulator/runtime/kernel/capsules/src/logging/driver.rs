@@ -9,9 +9,6 @@ use kernel::syscall::{CommandReturn, SyscallDriver};
 use kernel::utilities::cells::{OptionalCell, TakeCell};
 use kernel::{ErrorCode, ProcessId};
 
-pub const LOGGING_FLASH_DRIVER_NUM_START: usize = 0x9001_0000;
-pub const LOGGING_FLASH_DRIVER_NUM_END: usize = LOGGING_FLASH_DRIVER_NUM_START + 0xFF;
-pub const LOGGING_FLASH_INSTANCE_COUNT: usize = 2;
 pub const BUF_LEN: usize = 256;
 
 /// IDs for subscribed upcalls.

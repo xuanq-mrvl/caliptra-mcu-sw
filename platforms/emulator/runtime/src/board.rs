@@ -153,8 +153,7 @@ struct VeeR {
     dma: &'static caliptra_mcu_capsules_emulator::dma::Dma<'static>,
     logging_flash: [Option<
         &'static caliptra_mcu_capsules_emulator::logging::driver::LoggingFlashDriver<'static>,
-    >;
-        caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_INSTANCE_COUNT],
+    >; caliptra_mcu_config_emulator::flash::LOGGING_FLASH_INSTANCE_COUNT],
     mci: &'static caliptra_mcu_capsules_runtime::mci::Mci,
     mcu_mbox0: &'static caliptra_mcu_capsules_runtime::mcu_mbox::McuMboxDriver<
         'static,
@@ -208,12 +207,12 @@ impl SyscallDriverLookup for VeeR {
                 }
                 return f(None);
             }
-            caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_DRIVER_NUM_START
-                ..=caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_DRIVER_NUM_END => {
+            caliptra_mcu_config_emulator::flash::LOGGING_FLASH_DRIVER_NUM_START
+                ..=caliptra_mcu_config_emulator::flash::LOGGING_FLASH_DRIVER_NUM_END => {
                 // Instance `i` is at `LOGGING_FLASH_DRIVER_NUM_START + i` by construction
                 // (see `instantiate_logging_flash!`), so we index positionally.
                 let idx = driver_num
-                    - caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_DRIVER_NUM_START;
+                    - caliptra_mcu_config_emulator::flash::LOGGING_FLASH_DRIVER_NUM_START;
                 match self.logging_flash.get(idx) {
                     Some(Some(instance)) => f(Some(*instance)),
                     _ => f(None),
@@ -721,8 +720,8 @@ pub unsafe fn main() {
     let mut logging_flash: [Option<
         &'static caliptra_mcu_capsules_emulator::logging::driver::LoggingFlashDriver<'static>,
     >;
-        caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_INSTANCE_COUNT] =
-        [None; caliptra_mcu_capsules_emulator::logging::driver::LOGGING_FLASH_INSTANCE_COUNT];
+        caliptra_mcu_config_emulator::flash::LOGGING_FLASH_INSTANCE_COUNT] =
+        [None; caliptra_mcu_config_emulator::flash::LOGGING_FLASH_INSTANCE_COUNT];
 
     crate::instantiate_logging_flash!(
         logging_flash_list,
