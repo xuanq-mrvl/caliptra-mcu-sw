@@ -1,5 +1,6 @@
 // Licensed under the Apache-2.0 license
 
+use caliptra_mcu_libsyscall_caliptra::logging::driver_num::LOGGING_FLASH1;
 use caliptra_mcu_libsyscall_caliptra::logging::LoggingSyscall;
 use caliptra_mcu_romtime::println;
 use core::fmt::Write;
@@ -99,6 +100,101 @@ pub async fn test_logging_flash_various_entries() {
     assert!(read_after_clear.is_err(), "Log should be empty after clear");
 
     println!("test_logging_flash_various_entries succeeded");
+}
+
+pub async fn test_logging_flash_multiple_instances() {
+    println!("test_logging_flash_multiple_instances started");
+
+    let log0: LoggingSyscall = LoggingSyscall::default();
+    let log1: LoggingSyscall = LoggingSyscall::new(LOGGING_FLASH1);
+    assert!(log0.exists().is_ok(), "Logging instance 0 doesn't exist");
+    assert!(log1.exists().is_ok(), "Logging instance 1 doesn't exist");
+    assert!(
+        log0.get_capacity().is_ok(),
+        "Failed to get logging capacity for instance 0"
+    );
+    assert!(
+        log1.get_capacity().is_ok(),
+        "Failed to get logging capacity for instance 1"
+    );
+
+    assert!(
+        log0.seek_beginning().await.is_ok(),
+        "Seek beginning failed for instance 0"
+    );
+    assert!(
+        log1.seek_beginning().await.is_ok(),
+        "Seek beginning failed for instance 1"
+    );
+    assert!(
+        log1.clear().await.is_ok(),
+        "Clear log failed for instance 1"
+    );
+
+    let mut entry_buf_0 = [0u8; 32];
+    let mut entry_buf_1 = [0u8; 48];
+    for i in 0..entry_buf_0.len() {
+        entry_buf_0[i] = b'A' + (i % 26) as u8;
+    }
+    for i in 0..entry_buf_1.len() {
+        entry_buf_1[i] = b'a' + (i % 26) as u8;
+    }
+
+    assert!(
+        log0.append_entry(&entry_buf_0).await.is_ok(),
+        "Failed to append entry to instance 0"
+    );
+    assert!(
+        log1.append_entry(&entry_buf_1).await.is_ok(),
+        "Failed to append entry to instance 1"
+    );
+
+    let mut buffer = [0u8; 128];
+    let read_result = log0.read_entry(&mut buffer).await;
+    assert!(read_result.is_ok(), "Failed to read entry from instance 0");
+    let len = read_result.unwrap();
+    assert!(
+        buffer[..len] == entry_buf_0[..len],
+        "Instance 0 entry contents mismatch"
+    );
+
+    buffer.fill(0);
+    let read_result = log1.read_entry(&mut buffer).await;
+    assert!(read_result.is_ok(), "Failed to read entry from instance 1");
+    let len = read_result.unwrap();
+    assert!(
+        buffer[..len] == entry_buf_1[..len],
+        "Instance 1 entry contents mismatch"
+    );
+
+    assert!(
+        log0.clear().await.is_ok(),
+        "Clear log failed for instance 0"
+    );
+    buffer.fill(0);
+    let read_after_clear = log0.read_entry(&mut buffer).await;
+    assert!(
+        read_after_clear.is_err(),
+        "Instance 0 should be empty after clear"
+    );
+
+    assert!(
+        log1.seek_beginning().await.is_ok(),
+        "Seek beginning failed for instance 1"
+    );
+    buffer.fill(0);
+    let read_result = log1.read_entry(&mut buffer).await;
+    assert!(
+        read_result.is_ok(),
+        "Failed to read entry from instance 1 after clearing instance 0"
+    );
+    let len = read_result.unwrap();
+    assert!(
+        buffer[..len] == entry_buf_1[..len],
+        "Instance 1 entry mismatch after clearing instance 0"
+    );
+
+    println!("test_logging_flash_multiple_instances succeeded");
 }
 
 pub async fn test_logging_flash_invalid_inputs() {
