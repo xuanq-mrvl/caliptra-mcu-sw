@@ -6,7 +6,7 @@ use core::fmt::Write;
 
 pub async fn test_logging_flash_simple() {
     println!("test_logging_flash_simple started");
-    let log: LoggingSyscall = LoggingSyscall::new();
+    let log: LoggingSyscall = LoggingSyscall::default();
 
     assert!(log.exists().is_ok(), "Logging driver doesn't exist");
     assert!(log.get_capacity().is_ok(), "Failed to get logging capacity");
@@ -35,7 +35,7 @@ pub async fn test_logging_flash_simple() {
 pub async fn test_logging_flash_various_entries() {
     println!("test_logging_flash_various_entries started");
 
-    let log: LoggingSyscall = LoggingSyscall::new();
+    let log: LoggingSyscall = LoggingSyscall::default();
     assert!(log.exists().is_ok(), "Logging driver doesn't exist");
     assert!(log.get_capacity().is_ok(), "Failed to get logging capacity");
     assert!(log.seek_beginning().await.is_ok(), "Seek beginning failed");
@@ -104,7 +104,7 @@ pub async fn test_logging_flash_various_entries() {
 pub async fn test_logging_flash_invalid_inputs() {
     println!("test_logging_flash_invalid_inputs started");
 
-    let log: LoggingSyscall = LoggingSyscall::new();
+    let log: LoggingSyscall = LoggingSyscall::default();
     assert!(log.exists().is_ok(), "Logging driver doesn't exist");
     assert!(log.get_capacity().is_ok(), "Failed to get logging capacity");
     assert!(log.seek_beginning().await.is_ok(), "Seek beginning failed");

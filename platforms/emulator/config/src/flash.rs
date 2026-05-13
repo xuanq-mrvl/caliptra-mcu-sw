@@ -57,6 +57,14 @@ macro_rules! flash_partition_list_secondary {
     }};
 }
 
+#[macro_export]
+macro_rules! logging_flash_list {
+    ($macro:ident) => {{
+        $macro!(0, LOG0);
+        $macro!(1, LOG1);
+    }};
+}
+
 #[derive(Debug, Clone, FromBytes, IntoBytes, Immutable, PartialEq, Default)]
 #[repr(C, packed)]
 pub struct PartitionTable {
