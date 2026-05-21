@@ -191,10 +191,31 @@ impl StandAloneChecksumCalculator {
 }
 impl ChecksumCalculator for StandAloneChecksumCalculator {}
 
-pub const LOGGING_FLASH_INSTANCE_COUNT: usize = 2;
 pub const LOGGING_FLASH_DRIVER_NUM_START: usize = 0x9001_0000;
 pub const LOGGING_FLASH_DRIVER_NUM_END: usize = LOGGING_FLASH_DRIVER_NUM_START + 0xFF;
-pub const LOGGING_FLASH1: u32 = LOGGING_FLASH_DRIVER_NUM_START as u32 + 1;
+
+/// Number of logging-flash instances exposed from `logging_flash_list!`
+pub const LOGGING_FLASH_INSTANCE_COUNT: usize = {
+    let mut count: usize = 0;
+    macro_rules! __count_logging_flash_entry {
+        ($idx:expr, $name:ident) => {
+            count += 1;
+        };
+    }
+    logging_flash_list!(__count_logging_flash_entry);
+    count
+};
+
+/// Driver number array for logging-flash instances
+pub const LOGGING_FLASH_DRIVER_NUMS: [u32; LOGGING_FLASH_INSTANCE_COUNT] = {
+    let mut nums = [0u32; LOGGING_FLASH_INSTANCE_COUNT];
+    let mut i = 0;
+    while i < nums.len() {
+        nums[i] = LOGGING_FLASH_DRIVER_NUM_START as u32 + i as u32;
+        i += 1;
+    }
+    nums
+};
 
 // Logging flash configuration for emulator platform
 #[derive(Debug, Clone, Copy)]

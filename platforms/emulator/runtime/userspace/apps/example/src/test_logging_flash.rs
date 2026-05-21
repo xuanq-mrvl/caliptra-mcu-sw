@@ -1,6 +1,6 @@
 // Licensed under the Apache-2.0 license
 
-use caliptra_mcu_config_emulator::flash::LOGGING_FLASH1;
+use caliptra_mcu_config_emulator::flash::LOGGING_FLASH_DRIVER_NUMS;
 use caliptra_mcu_libsyscall_caliptra::logging::LoggingSyscall;
 use caliptra_mcu_romtime::println;
 use core::fmt::Write;
@@ -106,7 +106,7 @@ pub async fn test_logging_flash_multiple_instances() {
     println!("test_logging_flash_multiple_instances started");
 
     let log0: LoggingSyscall = LoggingSyscall::default();
-    let log1: LoggingSyscall = LoggingSyscall::new(LOGGING_FLASH1);
+    let log1: LoggingSyscall = LoggingSyscall::new(LOGGING_FLASH_DRIVER_NUMS[1]);
     assert!(log0.exists().is_ok(), "Logging instance 0 doesn't exist");
     assert!(log1.exists().is_ok(), "Logging instance 1 doesn't exist");
     assert!(
